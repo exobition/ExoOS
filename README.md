@@ -33,3 +33,7 @@ CPU: AMD E2-1800 1.7GHz APU
 RAM: 8GB DDR3 SO-DIMM 1600hz PC3-12800
 
 STORAGE: 320GB SATA HDD
+
+Image of development as of 17 Jan 2026 18:56
+
+![current development lul XD](Screenshot_20260117_184304.png)

@@ -1,10 +1,10 @@
 # ExoOS - An operating system project
 
-Its a hobby project so dont expect it to be insanely proficent, optimized, and totally bug free. (Or even expect it to be finished cuz I get burnt out easily sorry :/)
+Its a hobby project so dont expect it to be insanely proficent, optimized, and totally bug free. (Or even expect it to be finished cuz I get burnt out easily sorry)
 
 DISCLAMER:
 
-Currently the iso does not work but i am still working on a way to make a bootable iso (for virtual box cuz it wont boot the floppy image file) due to it being a pain in the ass :/.
+Currently the iso does not work but i am still working on a way to make a bootable iso (for virtual box cuz it wont boot the floppy image file) due to it being a pain in the ass.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ Currently the iso does not work but i am still working on a way to make a bootab
 
 ## Booting
 
- 1. In the project DIR run "make BOOT" in terminal
+ 1. In the project DIR run "make BOOT_(type FLOPPY CD or DRIVE for which option you want)" in terminal
 
 ## Clearing build DIR
 
@@ -30,9 +30,9 @@ Currently the iso does not work but i am still working on a way to make a bootab
 
 I guess have better specs than what i have.
 
-CPU: AMD E2-1800 1.7GHz APU
+CPU: Intel Core i5-3320M @ 3.30GHz
 
-(i)GPU: Radeon HD 7340
+(i)GPU: Intel HD 4000 Integrated graphics
 
 RAM: 8GB DDR3 SO-DIMM 1600hz PC3-12800
 

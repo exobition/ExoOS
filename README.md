@@ -24,7 +24,7 @@ Currently the iso does not work but i am still working on a way to make a bootab
 
 ## Clearing build DIR
 
-1. In the project DIR run "make CLEAR" in terminal
+1. In the project DIR run "make CLEAN" in terminal
 
 ## Recommended specs
 

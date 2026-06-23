@@ -12,7 +12,8 @@ Currently the iso does not work but i am still working on a way to make a bootab
 2. MUST have 'nasm' installed
 3. MUST have 'make' installed
 4. MUST have the 'qemu-full' package installed (NOT 'qemu-base' idk if it will work)
-5. Have a text editor (If you desire to make a fork or edit the code)
+5. MUST have the 'dosfstools' package installed
+6. Have a text editor (If you desire to make a fork or edit the code)
 
 ## Compiling
 

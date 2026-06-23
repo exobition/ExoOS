@@ -36,15 +36,38 @@ sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtoo
 
 ## Compiling
 
-1. In the project DIR run "make BUILD" in terminal
+1. make sure you are in the root of the project directory
+2. run code below
+```bash
+make BUILD
+```
 
 ## Booting
 
- 1. In the project DIR run "make BOOT_(type FLOPPY CD or DRIVE for which option you want)" in terminal
+ 1. make sure you are in the root of the project directory
+ 2. run code below
+
+### for booting DRIVE
+```bash
+make BOOT_DRIVE
+```
+### for booting FLOPPY
+```bash
+make BOOT_FLOPPY
+```
+### for booting CD (isnt working yet.)
+```bash
+make BOOT_CD
+```
 
 ## Clearing build DIR
 
-1. In the project DIR run "make CLEAN" in terminal
+1. make sure you are in the root of the project directory
+2. run code below
+
+```bash
+make CLEAN
+```
 
 ## Recommended specs
 

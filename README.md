@@ -18,21 +18,21 @@ Currently the iso does not work but i am still working on a way to make a bootab
 8. IF you desire to edit the code, have a text editor, any will do.
 
 ### for arch linux
-'''bash
+```bash
 sudo pacman -S --needed nasm make qemu-desktop dosfstools coreutils cdrtools
-'''
+```
 ### for debian-based systems
-'''bash
+```bash
 sudo apt update && sudo apt install -y nasm make qemu-system-x86 qemu-utils dosfstools coreutils genisoimage
-'''
+```
 ### for fedora/REHL/CentOS
-'''bash
+```bash
 sudo dnf install -y nasm make qemu-system-x86 qemu-img dosfstools coreutils cdrtools
-'''
+```
 ### for OpenSUSE
-'''bash
+```bash
 sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtools
-'''
+```
 
 ## Compiling
 

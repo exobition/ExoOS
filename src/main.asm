@@ -9,7 +9,7 @@ bdb_sectors_per_cluster: db 1
 bdb_reserved_sectors: db 1 
 bdb_fat_count: db 2
 bdb_dir_entries_count: dw 0x0e0
-bdb_total_sectors: 2880
+bdb_total_sectors: dw 2880
 bdb_media_descriptor_type: db 0x0F0
 bdb_sectors_per_fat: dw 9
 bdb_sectors_per_track: dw 18
@@ -25,7 +25,7 @@ ebr_volume_label: db 'Exo OS     '
 ebr_system_id: db 'FAT12   '
 
 
-msg: db "Type something idk: ", 0 
+msg: db "Stage 1 loaded ", 0 
 
 main:
   cli
@@ -42,18 +42,13 @@ main:
 printf:
   lodsb
   test al, al 
-  jz getinput
+  jz halt
   mov ah, 0x0e 
   int 0x10
   jmp printf
 
-getinput:
-  mov ah, 0x00 
-  xor al, al 
-  int 0x16
-  mov ah, 0x0e 
-  int 0x10 
-  jmp getinput
+halt:
+  jmp halt
 
 times 510-($-$$) db 0 
   dw 0xaa55

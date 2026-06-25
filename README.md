@@ -39,7 +39,7 @@ sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtoo
 1. make sure you are in the root of the project directory
 2. run code below
 ```bash
-make build
+make buildOS
 ```
 
 ## Booting

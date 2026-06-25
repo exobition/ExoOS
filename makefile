@@ -13,7 +13,7 @@ build:
   build
 
 clean:
-	rm -rf ~/osdev/ExoOS/build/*
+	sudo rm -rf ~/osdev/ExoOS/build/*
 
 boot_drive:
 	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -fda build/image.img

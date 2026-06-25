@@ -1,14 +1,9 @@
-OPEN:
-	nvim src/main.asm
-
-MAKE_QDRIVE:
-	qemu-img create -f qcow2 build/ExoDisk.qcow2 256M
-
-BUILD:
+build:
 	nasm src/main.asm -f bin -o build/main.bin 
 	dd if=/dev/zero of=build/image.img bs=512 count=2880
 	dd if=build/main.bin of=build/image.img bs=512 count=1 conv=notrunc
 	mkfs.fat -F 12 -n "ExoOS" /build/image.img
+	qemu-img create -f qcow2 build/ExoDisk.qcow2 256M
 	mkisofs \
   -o build/cd.iso \
   -b main.bin \
@@ -17,14 +12,14 @@ BUILD:
   -boot-info-table \
   build
 
-CLEAN:
+clean:
 	rm -rf ~/osdev/ExoOS/build/*
 
-BOOT_DRIVE:
+boot_drive:
 	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -fda build/image.img
 
-BOOT_FLOPPY:
+boot_floppy:
 	qemu-system-i386 -fda  build/image.img
 
-BOOT_CD:
+boot_cd:
 	qemu-system-i386 -cdrom build/cd.iso

@@ -1,4 +1,4 @@
-build:
+buildOS:
 	nasm src/main.asm -f bin -o build/main.bin 
 	dd if=/dev/zero of=build/image.img bs=512 count=2880
 	dd if=build/main.bin of=build/image.img bs=512 count=1 conv=notrunc

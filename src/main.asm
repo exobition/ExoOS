@@ -27,13 +27,18 @@ ebr_system_id: db 'FAT12   '
 
 msg: db "Stage 1 loaded ", 0 
 
+error_msg: db "disk read failed.", 0
+
 main:
   cli
   xor ax, ax
   mov ds, ax
   mov es, ax 
   mov ss, ax
-  mov sp, 0x7c00 
+  mov sp, 0x7c00
+
+  mov [BOOT_DRIVE], dl
+ 
   sti 
 
   mov si, msg
@@ -42,13 +47,46 @@ main:
 printf:
   lodsb
   test al, al 
-  jz halt
+  jz disk_load_prep
   mov ah, 0x0e 
   int 0x10
   jmp printf
 
-halt:
-  jmp halt
+disk_load_prep:
+  mov si, error_msg
+ 
+  jmp disk_load
+
+disk_load:
+  push dx
+
+  mov ah, 0x02
+  mov al, 0x01
+  mov ch, 0x00
+  mov cl, 0x02
+  mov dh, 0x00
+  mov dl, [BOOT_DRIVE]
+
+  mov bx, 0
+  mov es, bx
+
+  mov bx, 0x8000
+
+  int 0x13
+
+  jc .error
+  
+  jmp 0x0000:0x8000  
+
+.error:
+  lodsb
+  test al, al
+  jz $
+  mov ah, 0x0e
+  int 0x10
+  jmp .error
+
+BOOT_DRIVE db 0
 
 times 510-($-$$) db 0 
   dw 0xaa55

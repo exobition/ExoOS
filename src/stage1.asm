@@ -58,8 +58,7 @@ disk_load_prep:
   jmp disk_load
 
 disk_load:
-  push dx
-
+  
   mov ah, 0x02
   mov al, 0x01
   mov ch, 0x00
@@ -67,25 +66,37 @@ disk_load:
   mov dh, 0x00
   mov dl, [BOOT_DRIVE]
 
-  mov bx, 0
+  xor bx, bx 
   mov es, bx
 
   mov bx, 0x8000
 
   int 0x13
 
-  jc .error
+  jc .error_prep
   
   jmp 0x0000:0x8000  
+
+.error_prep:
+  call .recaldisk
+  inc word [ERROR_TIMES]
+  cmp word [ERROR_TIMES], 1
+  je .error
+  jg $
 
 .error:
   lodsb
   test al, al
-  jz $
+  jz disk_load
   mov ah, 0x0e
   int 0x10
   jmp .error
 
+.recaldisk:
+  xor ah, ah
+  int 0x13
+
+ERROR_TIMES db 0
 BOOT_DRIVE db 0
 
 times 510-($-$$) db 0 

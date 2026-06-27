@@ -4,7 +4,7 @@ Its a hobby project so dont expect it to be insanely proficent, optimized, and t
 
 DISCLAMER:
 
-Currently the iso does not work but i am still working on a way to make a bootable iso (for virtual box cuz it wont boot the floppy image file) due to it being a pain in the ass.
+Currently the iso does not work but i am still working on a way to make a bootable iso due to it being a pain in the ass.
 
 ## Prerequisites
 

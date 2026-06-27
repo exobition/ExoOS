@@ -69,17 +69,16 @@ make boot_cd
 make clean
 ```
 
+## Minimum specs
+
+CPU: 32-bit or 64-bit
+GPU: none
+RAM: 8mb
+STORAGE: >2kb
+
 ## Recommended specs
 
-I guess have better specs than what i have.
-
-CPU: Intel Core i5-3320M @ 3.30GHz
-
-(i)GPU: Intel HD 4000 Integrated graphics
-
-RAM: 8GB DDR3 SO-DIMM 1600hz PC3-12800
-
-STORAGE: 320GB SATA HDD
+>potato
 
 Image of development as of 17 Jan 2026 18:56
 

@@ -1,9 +1,9 @@
 buildOS:
-        nasm src/main.asm -f bin -o build/main.bin 
+        nasm src/stage1.asm -f bin -o build/stage1.bin 
         nasm src/stage2.asm -f bin -o build/stage2.bin
         dd if=/dev/zero of=build/image.img bs=512 count=2880
         mkfs.fat -F 12 -n "ExoOS" build/image.img
-        dd if=build/main.bin of=build/image.img bs=512 count=1 conv=notrunc
+        dd if=build/stage1.bin of=build/image.img bs=512 count=1 conv=notrunc
         dd if=build/stage2.bin of=build/image.img bs=512 seek=1 conv=notrunc
         qemu-img create -f qcow2 build/ExoDisk.qcow2 256M
         mkisofs \

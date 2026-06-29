@@ -1,10 +1,10 @@
 # ExoOS - An operating system project
 
-Its a hobby project so dont expect it to be insanely proficent, optimized, and totally bug free. (Or even expect it to be finished cuz I get burnt out easily sorry)
+Its a hobby project so dont expect it to be insanely proficent, optimized, totally bug free, and be up to todays standards. (Or even expect it to be finished cuz I lose motivation easily sorry)
 
 DISCLAMER:
 
-Currently the iso does not work but i am still working on a way to make a bootable iso due to it being a pain in the ass.
+Currently the iso does not work but i am still working on a way to make a bootable iso due to it being a pain in the ass. (nevermind it works now, just havent uploaded the new code n' stuff)
 
 ## Prerequisites
 

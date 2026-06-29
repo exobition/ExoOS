@@ -8,14 +8,13 @@ Currently the iso does not work but i am still working on a way to make a bootab
 
 ## Prerequisites
 
-1. MUST use a linux machine or the Windows Subsytem for Linux (WSL)
-2. MUST have the 'nasm' package installed
-3. MUST have the 'make' package installed
-4. MUST have the 'qemu-desktop' package installed
-5. MUST have the 'dosfstools' package installed
-6. MUST have the 'coreutils' package installed (Usually installed on linux by default)
-7. MUST have the 'cdrtools' package installed
-8. IF you desire to edit the code, have a text editor, any will do.
+1. MUST have the 'nasm' package installed
+2. MUST have the 'make' package installed
+3. MUST have the 'qemu-desktop' package installed
+4. MUST have the 'dosfstools' package installed
+5. MUST have the 'coreutils' package installed (Usually installed on linux by default)
+6. MUST have the 'cdrtools' package installed
+7. IF you desire to edit the code, have a text editor, any will do.
 
 ### for arch linux
 ```bash
@@ -33,6 +32,12 @@ sudo dnf install -y nasm make qemu-system-x86 qemu-img dosfstools coreutils cdrt
 ```bash
 sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtools
 ```
+
+### for windows
+install wsl and a distro (I recommend ubuntu) and follow the corresponding tutorial
+
+### for mac
+¯\_(ツ)_/¯
 
 ## Compiling
 

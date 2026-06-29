@@ -88,3 +88,8 @@ STORAGE: >2kb
 Image of development as of 17 Jan 2026 18:56
 
 ![current development lul XD](Screenshot_20260117_184304.png)
+
+Image of development as of 29 June 2026 16:23
+
+
+![two stage bootloader prototype](picture_2026-06-29_16-23-04.jpg)

@@ -37,7 +37,7 @@ sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtoo
 install wsl and a distro (I recommend ubuntu) and follow the corresponding tutorial
 
 ### for mac
-¯\_(ツ)_/¯
+¯\ _(ツ)_/¯
 
 ## Compiling
 

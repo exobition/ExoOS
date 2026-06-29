@@ -73,21 +73,14 @@ disk_load:
 
   int 0x13
 
-  jc .error_prep
+  jc .error
   
   jmp 0x0000:0x8000  
-
-.error_prep:
-  call .recaldisk
-  inc word [ERROR_TIMES]
-  cmp word [ERROR_TIMES], 1
-  je .error
-  jg $
 
 .error:
   lodsb
   test al, al
-  jz disk_load
+  jz .recaldisk
   mov ah, 0x0e
   int 0x10
   jmp .error
@@ -95,8 +88,8 @@ disk_load:
 .recaldisk:
   xor ah, ah
   int 0x13
+  jmp disk_load
 
-ERROR_TIMES db 0
 BOOT_DRIVE db 0
 
 times 510-($-$$) db 0 

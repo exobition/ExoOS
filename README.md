@@ -32,6 +32,10 @@ sudo dnf install -y nasm make qemu-system-x86 qemu-img dosfstools coreutils cdrt
 ```bash
 sudo zypper install -y nasm make qemu-x86 qemu-tools dosfstools coreutils cdrtools
 ```
+### for Gentoo
+```bash
+emerge --ask dev-lang/nasm sys-apps/coreutils sys-fs/dosfstools app-cdr/cdrtools app-emulation/qemu
+```
 
 ### for windows
 install wsl and a distro (I recommend ubuntu) and follow the corresponding tutorial

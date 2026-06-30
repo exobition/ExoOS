@@ -20,7 +20,7 @@ Currently the iso does not work but i am still working on a way to make a bootab
 ```bash
 sudo pacman -S --needed nasm make qemu-desktop dosfstools coreutils cdrtools
 ```
-### for debian-based systems
+### for debian-based systems (ubuntu, kali, parrot, mint, etc.)
 ```bash
 sudo apt update && sudo apt install -y nasm make qemu-system-x86 qemu-utils dosfstools coreutils genisoimage
 ```

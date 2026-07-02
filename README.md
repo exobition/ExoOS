@@ -1,10 +1,9 @@
 # ExoOS - An operating system project
 
-Its a hobby project so dont expect it to be insanely proficent, optimized, totally bug free, and be up to todays standards. (Or even expect it to be finished cuz I lose motivation easily sorry)
+ExoOS is currently just a two stage bootloader prototype, Im currently working on a GDT in the background so stay tuned and it might get uploaded soon, meanwhile have fun doing what you're doin.
 
 DISCLAMER:
-
-Currently the iso does not work but i am still working on a way to make a bootable iso due to it being a pain in the ass. (nevermind it works now, just havent uploaded the new code n' stuff)
+Iso works but is not a tradition iso, just floppy image in an iso file.
 
 ## Prerequisites
 

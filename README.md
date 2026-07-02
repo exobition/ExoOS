@@ -1,6 +1,6 @@
 # ExoOS - An operating system project
 
-ExoOS is currently just a two stage bootloader prototype, Im currently working on a GDT in the background so stay tuned and it might get uploaded soon, meanwhile have fun doing what you're doin.
+ExoOS is currently just a two stage bootloader prototype, Im currently working on a GDT in the background so stay tuned and it might get uploaded soon, meanwhile have fun doin what you're doin.
 
 DISCLAMER:
 Iso works but is not a tradition iso, just floppy image in an iso file.
@@ -75,6 +75,13 @@ make boot_cd
 
 ```bash
 make clean
+```
+
+## If you wish to copy and paste less you can use this command
+
+```bash
+make all & boot_drive
+# boot_drive is recommended due to the fact it boots floppy and uses a qemu drive (.qcow2)
 ```
 
 ## Minimum specs

@@ -1,6 +1,6 @@
 # ExoOS - An operating system project
 
-ExoOS is currently just a two stage bootloader prototype, Im currently working on a GDT in the background so stay tuned and it might get uploaded soon, meanwhile have fun doin what you're doin.
+ExoOS is currently a very basic bootloader and kernel, i am currently working on a vga driver that supports newlines, stay tuned for updates!
 
 DISCLAMER:
 Iso works but is not a tradition iso, just floppy image in an iso file.

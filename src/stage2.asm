@@ -105,7 +105,6 @@ GDT_Start:
     db 0xCF
     db 00
   SYSTEM_SEGMENT:
-    SYSTEM_SEGMENT:
     dw 0x0067
     dw 0x0000
     db 0x00    

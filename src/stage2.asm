@@ -1,3 +1,46 @@
+[bits 32]
+[org 0x10000]
+
+section .text
+
+main:
+  mov esi, msg
+
+  mov edi, 0xB8000
+  mov edx, 0xB8000
+
+  call printf
+  
+  mov al, 0x00 
+
+  call keyboard
+
+  jmp $
+
+printf:
+  lodsb
+  test al, al
+  jz return
+  cmp al, 0x0A 
+  je newline
+  mov ah, 0x0F
+  mov [edi], al
+  mov ebx, 0x02
+  add edi, ebx
+  xor ebx, ebx
+  jmp printf
+
+return:
+
+  ret
+  
+section .data
+  msg: db "#########################", 10, "# Welcome to ExoOS v0.1 #", 10, "#########################", 0 
+
+  VGANL equ 0xA0
+
+times 512-($-$$) db 0
+[exobition@ExobitionsT430 src]$ cat stage2.asm
 [BITS 16]
 [ORG 0x8000]
 
@@ -61,6 +104,14 @@ GDT_Start:
     db 0xF2
     db 0xCF
     db 00
+  SYSTEM_SEGMENT:
+    SYSTEM_SEGMENT:
+    dw 0x0067
+    dw 0x0000
+    db 0x00    
+    db 0x89
+    db 0x00
+    db 0x00
 
 GDT_End:
 
@@ -131,6 +182,7 @@ KERNEL_CODE_SEG equ KERNEL_CODE_SEGMENT - GDT_Start
 KERNEL_DATA_SEG equ KERNEL_DATA_SEGMENT - GDT_Start
 USER_CODE_SEG   equ USER_CODE_SEGMENT - GDT_Start
 USER_DATA_SEG   equ USER_DATA_SEGMENT - GDT_Start
+SYSTEM_SEG equ SYSTEM_SEGMENT - GDT_Start
 
 error_msg: db "Disk read error"
 

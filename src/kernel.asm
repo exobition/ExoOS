@@ -13,8 +13,6 @@ main:
   
   mov al, 0x00 
 
-  call keyboard
-
   jmp $
 
 printf:
@@ -29,6 +27,17 @@ printf:
   add edi, ebx
   xor ebx, ebx
   jmp printf
+
+newline:
+  add edx, VGANL
+  cmp edi, edx
+  ja DNSys
+  mov edi, edx
+  jmp printf
+  
+DNSys:
+  add edx, VGANL
+  jmp newline
 
 return:
 

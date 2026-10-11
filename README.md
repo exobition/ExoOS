@@ -34,7 +34,7 @@ emerge --ask dev-lang/nasm sys-apps/coreutils sys-fs/dosfstools app-cdr/cdrtools
 ```
 
 ### for windows
-install wsl and a distro (I recommend ubuntu) and follow the corresponding tutorial
+Follow the tutorial at https://theshepord.github.io/intro-to-WSL/ to get wsl running and then follow the corresponding tutorial to the distro you have chosen.
 
 ### for mac
 ¯\ _(ツ)_/¯

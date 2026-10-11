@@ -95,6 +95,12 @@ STORAGE: >3kb
 
 >potato
 
+## Known problems
+
+> mkfs.fat is reported as not found
+Solution
+> run 'echo 'export PATH=$PATH:/sbin:/usr/sbin' >> ~/.bashrc && source ~/.bashrc' after installing everything the tutorial tells you to
+
 Image of development as of 17 Jan 2026 18:56
 
 ![current development lul XD](Screenshot_20260117_184304.png)

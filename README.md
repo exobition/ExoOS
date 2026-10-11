@@ -1,9 +1,6 @@
 # ExoOS - An operating system project
 
-ExoOS is currently a very basic bootloader and kernel, i am currently working on a vga driver that supports newlines, stay tuned for updates!
-
-DISCLAMER:
-Iso works but is not a tradition iso, just floppy image in an iso file.
+ExoOS is currently a very basic bootloader and kernel, check osdev dc for updates.
 
 ## Prerequisites
 

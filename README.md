@@ -98,10 +98,12 @@ Problem:
 + mkfs.fat is reported as not a command
 Solution:
 + run the following code after installing everything the tutorial tells you to (THIS IS FOR BASH SYSTEMS)
+
 '''bash
 echo 'export PATH=$PATH:/sbin:/usr/sbin' >> ~/.bashrc && source ~/.bashrc
 '''
 + If you are running a zsh system instead of a bash system, run the code below.
+
 '''zsh
 echo 'export PATH=$PATH:/sbin:/usr/sbin' >> ~/.zshrc && source ~/.zshrc
 '''

@@ -95,8 +95,11 @@ STORAGE: >3kb
 ## Known problems
 
 Problem:
+
 + mkfs.fat is reported as not a command
+
 Solution:
+
 + run the following code after installing everything the tutorial tells you to (THIS IS FOR BASH SYSTEMS)
 
 ```bash

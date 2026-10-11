@@ -99,14 +99,14 @@ Problem:
 Solution:
 + run the following code after installing everything the tutorial tells you to (THIS IS FOR BASH SYSTEMS)
 
-'''bash
+```bash
 echo 'export PATH=$PATH:/sbin:/usr/sbin' >> ~/.bashrc && source ~/.bashrc
-'''
+```
 + If you are running a zsh system instead of a bash system, run the code below.
 
-'''zsh
+```zsh
 echo 'export PATH=$PATH:/sbin:/usr/sbin' >> ~/.zshrc && source ~/.zshrc
-'''
+```
 
 Image of development as of 17 Jan 2026 18:56
 

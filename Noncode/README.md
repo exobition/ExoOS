@@ -2,9 +2,6 @@
 
 ExoOS is currently a very basic bootloader and kernel, i am currently working on a vga driver that supports newlines, stay tuned for updates!
 
-DISCLAMER:
-Iso works but is not a tradition iso, just floppy image in an iso file.
-
 ## Prerequisites
 
 1. MUST have the 'nasm' package installed
@@ -107,3 +104,7 @@ Image of development as of 29 June 2026 16:23 on physical hw
 Image of development as of 4 July 2026 15:01
 
 ![kernel prototype](Screenshot_20260708_151923.png)
+
+Image of development as of 31 October 2026 9:24
+
+![Kernel prototype in C](Screenshot_20261031_091834.png)

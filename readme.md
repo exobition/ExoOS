@@ -1,6 +1,6 @@
 # ExoOS - An operating system project
 
-ExoOS is currently a very basic bootloader and kernel, i am currently working on a vga driver that supports newlines, stay tuned for updates!
+ExoOS is currently a very basic bootloader and kernel, currently working on ps/2 keyboard input!
 
 ## Prerequisites
 

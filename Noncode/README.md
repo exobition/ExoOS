@@ -105,3 +105,5 @@ Image of development as of 29 June 2026 16:23 on physical hw
 ![two stage bootloader prototype](picture_2026-06-29_16-23-04.jpg)
 
 Image of development as of 4 July 2026 15:01
+
+![kernel prototype](Screenshot_20260708_151923.png)

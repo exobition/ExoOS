@@ -6,7 +6,7 @@
 #define VGAWidth 80
 #define VGAHeight 25
 
-#define VGAColor 0x07
+#define VGAColor 0x08
 
 #define COM1_PORT 0x3F8
 
@@ -27,13 +27,17 @@ static inline void clr() {
 }
 
 static inline void printf(const char *str) {
-    for (int i = 0x00, n = 0; str[n] != '\0'; i += 2, n++) {
-        if (str[n] == '\n') {
+    for (int i = 0x00, n = 0; str[n] != '\0'; i += 2, n++) { // loop that stops when str[n] reached null terminator
+        if (i >= 4000) { // if i reaches the end of the first vga page clear screen and set i back to original.
+            clr();
+            i = 0;
+        }
+        if (str[n] == '\n') { // newline sheisse, love it or hate it its alright
             n++;
             int bytes_into_row = i % 160;
             i += (160 - bytes_into_row);
         }
-        video[i] = str[n];
+        video[i] = str[n];  // core dont touch
         video[i + 1] = color;
     }
 }
@@ -66,6 +70,28 @@ static inline void outw(uint16_t port, uint16_t dataWrite) {
     );
 }
 
+static inline void  enableCursor(uint8_t cursorStart, uint8_t cursorEnd) { // from here to
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | cursorStart);
+
+    outb(0x3D4, 0x0B);
+    outb(0x3D5, (inb(0x3D5) & 0xE0) | cursorEnd);
+}
+
+static inline void disableCursor() {
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20);
+}
+
+static inline void moveCharacter(int x, int y) {
+    uint16_t pos = y * VGAWidth + x;
+
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t) (pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+} // here is all from wiki.osdev.org 
+
 static inline void initSerial() {
     outb(COM1_PORT + 1, 0x00); // STOP THE INTERRUPTS!
     outb(COM1_PORT + 3, 0x80); // initializing the serial port
@@ -86,9 +112,9 @@ static inline void writeCharSerial(char c){
     outb(COM1_PORT, c); // read name of function for what this does
 }
 
-static inline void prints(const char* str) {
+static inline void prints(const char* str) { 
     int i = 0;
-    while(str[i] != '\0') {
+    while (str[i] != '\0') { // loop that sends letters to serial ports until it reaches a null terminator
         writeCharSerial(str[i]);
         i++;
     }
@@ -104,10 +130,5 @@ static inline void printchar(char character, uint8_t color) { // dont use this, 
 }
 
 /*
-    Ok I know exactly what you are thinking after reading this code, and yeah I admit that there are probably
-    a lot of better and faster ways of doing this stuff but before you slam me with ways I could've done it gooder
-    just know that I couldnt care less and it just works. Also a lot of the redundancy of this code is because of
-    the compiler but you read my comments so you know that right? right...
-
-    Well if you actually read this find a way to message me the word "banana".
+    Thank you for reading the source code!
 */

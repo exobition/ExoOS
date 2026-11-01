@@ -94,18 +94,18 @@ STORAGE: >3kb
 
 Image of development as of 17 Jan 2026 18:56
 
-![current development lul XD](Screenshot_20260117_184304.png)
+![current development lul XD](Noncode/Screenshot_20260117_184304.png)
 
 Image of development as of 29 June 2026 16:23 on physical hw
 
 
-![two stage bootloader prototype](picture_2026-06-29_16-23-04.jpg)
+![two stage bootloader prototype](Noncode/picture_2026-06-29_16-23-04.jpg)
 
 Image of development as of 4 July 2026 15:01
 
-![kernel prototype](Screenshot_20260708_151923.png)
+![kernel prototype](Noncode/Screenshot_20260708_151923.png)
 
 Image of development as of 31 October 2026 9:24
 
-![Kernel prototype in C](Screenshot_20261031_091834.png)
+![Kernel prototype in C](Noncode/Screenshot_20261031_091834.png)
 

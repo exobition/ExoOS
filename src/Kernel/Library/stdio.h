@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "hwio.h"
 
 #define VGAMemory 0xB8000
 #define VGAMax 0xB9000
@@ -6,91 +7,26 @@
 #define VGAWidth 80
 #define VGAHeight 25
 
-#define VGAColor 0x08
+#define VGAColor 0x07
+
+#define PS2_DATA 0x60
+#define PS2_STATUS_COMMAND 0x64
+
+#define PS2_STATUS_IBF (1 << 1)
+#define PS2_STATUS_OBF (1 << 0)
 
 #define COM1_PORT 0x3F8
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
 volatile uint8_t color = VGAColor;
+int i = 0;
 
-static inline void clr() {
-    video = (volatile uint8_t*)VGAMemory;
-
-    int i = 0;
-    while(i != 4000) {
-        video[i] = ' ';
-        i++;
-        video[i] = 0x00;
-        i++;
+void abort() {
+    while(1) {
+        
     }
 }
-
-static inline void printf(const char *str) {
-    for (int i = 0x00, n = 0; str[n] != '\0'; i += 2, n++) { // loop that stops when str[n] reached null terminator
-        if (i >= 4000) { // if i reaches the end of the first vga page clear screen and set i back to original.
-            clr();
-            i = 0;
-        }
-        if (str[n] == '\n') { // newline sheisse, love it or hate it its alright
-            n++;
-            int bytes_into_row = i % 160;
-            i += (160 - bytes_into_row);
-        }
-        video[i] = str[n];  // core dont touch
-        video[i + 1] = color;
-    }
-}
-
-
-static inline uint8_t inb(uint16_t port) {
-    uint8_t result; // OH MY GOD OH JESUS ITS AN UNSIGNED INTEGER!!!
-
-    asm volatile (  // Let er' rip
-        "inb %1, %0"
-        :"=a"(result)
-        :"Nd"(port)
-    );
-    return result;
-}
-
-static inline void outb(uint16_t port, uint8_t dataWrite) {
-    asm volatile (  // Let er' rip 2nd edition
-        "outb %0, %1"
-        :
-        :"a"(dataWrite), "Nd"(port)
-    );
-}
-
-static inline void outw(uint16_t port, uint16_t dataWrite) {
-    asm volatile (  // Let er' rip 3nd edition
-        "outb %0, %1"
-        :
-        :"a"(dataWrite), "Nd"(port)
-    );
-}
-
-static inline void  enableCursor(uint8_t cursorStart, uint8_t cursorEnd) { // from here to
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, (inb(0x3D5) & 0xC0) | cursorStart);
-
-    outb(0x3D4, 0x0B);
-    outb(0x3D5, (inb(0x3D5) & 0xE0) | cursorEnd);
-}
-
-static inline void disableCursor() {
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, 0x20);
-}
-
-static inline void moveCharacter(int x, int y) {
-    uint16_t pos = y * VGAWidth + x;
-
-    outb(0x3D4, 0x0F);
-    outb(0x3D5, (uint8_t) (pos & 0xFF));
-    outb(0x3D4, 0x0E);
-    outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
-} // here is all from wiki.osdev.org 
 
 static inline void initSerial() {
     outb(COM1_PORT + 1, 0x00); // STOP THE INTERRUPTS!
@@ -113,10 +49,63 @@ static inline void writeCharSerial(char c){
 }
 
 static inline void prints(const char* str) { 
-    int i = 0;
-    while (str[i] != '\0') { // loop that sends letters to serial ports until it reaches a null terminator
+    for (int i = 0; str[i] != '\0'; i++) { // checks if str[i] is at null terminator, otherwise just keeps trucking
         writeCharSerial(str[i]);
+    }
+}
+
+static inline void  enableCursor(uint8_t cursorStart, uint8_t cursorEnd) { // from here to
+
+    outb(0x3D4, 0x0B);
+    outb(0x3D5, (inb(0x3D5) & 0xE0) | cursorEnd); // setting the scanline end 
+
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | cursorStart); // setting the scanline start
+
+    prints("VGA cursor enabled\r\n\0");
+}
+
+static inline void disableCursor() {
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20);
+
+    prints("VGA cursor disabled\r\n\0");
+}
+
+static inline void moveCursor(int x, int y) {
+    uint16_t pos = y * VGAWidth + x;
+
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t) (pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+} // here is all from wiki.osdev.org
+
+static inline void clr() {
+    video = (volatile uint8_t*)VGAMemory;
+
+    int i = 0;
+    while(i != 4000) {
+        video[i] = ' ';
         i++;
+        video[i] = 0x00;
+        i++;
+    }
+}
+
+static inline void printf(const char *str) {
+    for (int n = 0; str[n] != '\0'; i += 2, n++) { // loop that stops when str[n] reached null terminator
+        if (i >= 4000) { // if i reaches the end of the first vga page clear screen and set i back to original.
+            clr();
+            i = 0;
+        }
+        if (str[n] == '\n') { // newline sheisse, love it or hate it its alright
+            n++;
+            int bytes_into_row = i % 160;
+            i += (160 - bytes_into_row);
+        }
+        video[i] = str[n];  // core dont touch
+        video[i + 1] = color;
     }
 }
 
@@ -127,6 +116,73 @@ static inline void printchar(char character, uint8_t color) { // dont use this, 
     video[0] = character; // writing stuff to vga
     video[1] = color;
 
+}
+
+void PS2WaitWrite() {
+    while (inb(PS2_STATUS_COMMAND) & PS2_STATUS_IBF) {
+
+    }
+}
+
+void PS2WaitRead() {
+    while (!(inb(PS2_STATUS_COMMAND) & PS2_STATUS_OBF)) {
+
+    }
+}
+
+static inline void setPS2ConfigByte(uint8_t controllerConfigByte) {
+    PS2WaitWrite();
+    outb(PS2_STATUS_COMMAND, 0x20); // getting old PS/2 configuration byte
+    PS2WaitRead();
+    uint8_t CCB = inb(PS2_DATA);
+    if (CCB == controllerConfigByte) {  // Testing if its already how i like if
+        prints("PS/2 Controller Configuration Byte is already in correct configuration\r\n\0");
+    } else { // if not then send the right one
+        PS2WaitWrite();
+        outb(0x64, 0x60);
+        PS2WaitWrite();
+        outb(0x60, controllerConfigByte);
+        prints("PS/2 Controller Configuration Byte has been set\r\n\0");
+    }
+}
+
+static inline void initPS2Controller() {
+    prints("Begining PS/2 initialization\r\n\0");
+    PS2WaitWrite();
+    outb(PS2_STATUS_COMMAND, 0xA7); // disabling PS/2 devices
+    PS2WaitWrite();
+    outb(PS2_STATUS_COMMAND, 0xAD);
+    prints("PS/2 devices disabled\r\n\0");
+    inb(PS2_DATA); // flushing the data register
+    prints("Begining PS/2 Configuration\r\n\0");
+    
+    setPS2ConfigByte(0x64);
+
+    prints("Self-testing PS/2 controller\r\n\0");
+    PS2WaitWrite();
+    outb(PS2_STATUS_COMMAND, 0xAA); // getting the numbers that tell us if the PS/2 controller is ok or fried
+    PS2WaitRead();
+    uint8_t selfTestOutput = inb(PS2_DATA);
+
+    if (selfTestOutput == 0x55) { // actually checking if its ok
+        prints("PS/2 controller is OK\r\n\0");
+        PS2WaitWrite();
+        outb(PS2_STATUS_COMMAND, 0xA7);
+        prints("Disabled 2nd PS/2 channel\r\nTesting PS/2 port\r\n\0");
+        PS2WaitWrite();
+        outb(PS2_STATUS_COMMAND, 0xAB); // disabling 2nd playstation channel
+        PS2WaitRead();
+        uint8_t PS2PortTestOutput = inb(PS2_DATA);
+        if (PS2PortTestOutput == 0x00) {  // detecting el problemo with PS/2 port
+            prints("PS/2 port is ready for use\r\n\0"); // alright everything ok
+        } else {
+            prints("Problem detected with PS/2 port, aborting...\r\n\0"); // gulp
+            abort();
+        }
+    } else {
+        prints("PS/2 controller failed self-test, aborting...\r\n\0"); // ruh roh raggy, scoobs we gotta get outta here
+        abort();
+    }
 }
 
 /*

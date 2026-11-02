@@ -191,37 +191,34 @@ static inline void initPS2Controller() {
 }
 
 static inline void printc(const char c) {
-    if (i > 4000) {
+    if (i > 4000) { // clear screen if it reaches the end
         clr();
         i = 0;
     }
-    if (c == '\n') {
-        int bytes_into_row = i % 160;
-        i += (160 - bytes_into_row);
-        printf("User $ \0");
-        return;
+    if (c == '\n') { // detects if there is a newline
+        int bytes_into_row = i % 160; // finds amount needed to add to i to get to a newline
+        i += (160 - bytes_into_row); // actually getting to the newline
+        printf("User $ \0"); // larping shell commands
+        return; // "Back to where thou doth come thence" - some old xenophobic english dude
     }
-    video[i] = c;
-    video[i + 1] = color;
-    i += 2;
+    video[i] = c; // write to 
+    video[i + 1] = color; // VGA memory
+    i += 2; // Eke two
 }
 
 static inline void scanf() {
-    PS2WaitRead();
-    uint8_t scancode = inb(PS2_DATA);
-    if(scancode & 0x80) {
+    PS2WaitRead(); // wait
+    uint8_t scancode = inb(PS2_DATA); // getting the scancode
+    if(scancode & 0x80) { // getting rid of that release code
         prints("Character from PS/2 input printed\r\n\0");
-        return;
+        return; // "Back to where thou doth come thence" - another old xenophobic english dude
     }
-    printc(ascii_scancodes[scancode]);
-    }
+    printc(ascii_scancodes[scancode]); // print it
 }
 
 static inline void keyboard() {
-    int x = 4;
-    int y = 7;
     while (1) {
-        scanf();
+        scanf(); // its scanf and always has been
     }
 }
 

@@ -207,16 +207,13 @@ static inline void printc(const char c) {
 }
 
 static inline void scanf() {
-    int B = 0;
-    while (B != 1) {
-        PS2WaitRead();
-        uint8_t scancode = inb(PS2_DATA);
-        if(scancode & 0x80) {
-            prints("Character from PS/2 input printed\r\n\0");
-            continue;
-        }
-        printc(ascii_scancodes[scancode]);
-        B++;
+    PS2WaitRead();
+    uint8_t scancode = inb(PS2_DATA);
+    if(scancode & 0x80) {
+        prints("Character from PS/2 input printed\r\n\0");
+        return;
+    }
+    printc(ascii_scancodes[scancode]);
     }
 }
 

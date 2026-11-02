@@ -1,6 +1,6 @@
 # ExoOS - An operating system project
 
-ExoOS is currently a very basic bootloader and kernel, currently working on ps/2 keyboard input!
+ExoOS is currently a very basic bootloader and kernel, currently working on getting comments on the new PS/2 code!
 
 ## Prerequisites
 

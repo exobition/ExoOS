@@ -17,9 +17,19 @@
 
 #define COM1_PORT 0x3F8
 
+const char ascii_scancodes[58] = {
+    0,   27,  '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
+    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
+    0,   'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',  39,  '`',
+    0,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',  0,   '*',
+    0,   ' '
+};
+
+
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
 volatile uint8_t color = VGAColor;
+
 int i = 0;
 
 void abort() {
@@ -109,15 +119,6 @@ static inline void printf(const char *str) {
     }
 }
 
-static inline void printchar(char character, uint8_t color) { // dont use this, its more of a proof of concept and as useless as a 2 month old toddler.
-    //set the grandpa video memory to the variable the extra cool way
-    volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
-    
-    video[0] = character; // writing stuff to vga
-    video[1] = color;
-
-}
-
 void PS2WaitWrite() {
     while (inb(PS2_STATUS_COMMAND) & PS2_STATUS_IBF) {
 
@@ -174,6 +175,10 @@ static inline void initPS2Controller() {
         PS2WaitRead();
         uint8_t PS2PortTestOutput = inb(PS2_DATA);
         if (PS2PortTestOutput == 0x00) {  // detecting el problemo with PS/2 port
+            PS2WaitWrite();
+            outb(PS2_STATUS_COMMAND, 0xAE);
+            PS2WaitWrite();
+            outb(PS2_STATUS_COMMAND, 0xFF);
             prints("PS/2 port is ready for use\r\n\0"); // alright everything ok
         } else {
             prints("Problem detected with PS/2 port, aborting...\r\n\0"); // gulp
@@ -182,6 +187,44 @@ static inline void initPS2Controller() {
     } else {
         prints("PS/2 controller failed self-test, aborting...\r\n\0"); // ruh roh raggy, scoobs we gotta get outta here
         abort();
+    }
+}
+
+static inline void printc(const char c) {
+    if (i > 4000) {
+        clr();
+        i = 0;
+    }
+    if (c == '\n') {
+        int bytes_into_row = i % 160;
+        i += (160 - bytes_into_row);
+        printf("User $ \0");
+        return;
+    }
+    video[i] = c;
+    video[i + 1] = color;
+    i += 2;
+}
+
+static inline void scanf() {
+    int B = 0;
+    while (B != 1) {
+        PS2WaitRead();
+        uint8_t scancode = inb(PS2_DATA);
+        if(scancode & 0x80) {
+            prints("Character from PS/2 input printed\r\n\0");
+            continue;
+        }
+        printc(ascii_scancodes[scancode]);
+        B++;
+    }
+}
+
+static inline void keyboard() {
+    int x = 4;
+    int y = 7;
+    while (1) {
+        scanf();
     }
 }
 

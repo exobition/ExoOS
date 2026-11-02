@@ -6,7 +6,7 @@ void main() {
     initSerial();
     prints("Kernel loaded into ram successfully\r\nSerial initialized\r\n\0");
     disableCursor();
-    printf("###########################\n# Welcome to ExoOS v0.2.9 #\n###########################\n\0");
+    printf("#########################\n# Welcome to ExoOS v0.3 #\n#########################\n\0");
     printf("\nUser $ ");
     // note NEVER DOUBLE \n (as in printf("\n\n");) it will NOT work as intended,
     // instead use printf("\n"); and then another printf("\n")' if you need double
@@ -15,8 +15,6 @@ void main() {
 
     // nevermind it now tries to print \n like its a regular character (if you double \n) so just space em out or smth
     //tl;dr DONT USE \n\n
-    enableCursor(10, 12);
-    moveCursor(6, 4);
     initPS2Controller();
+    keyboard();
 }
-

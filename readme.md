@@ -60,7 +60,7 @@ make boot_drive
 ```bash
 make boot_floppy
 ```
-### for booting CD (isnt working yet.)
+### for booting CD
 ```bash
 make boot_cd
 ```

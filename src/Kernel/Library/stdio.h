@@ -30,6 +30,8 @@ volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
 volatile uint8_t color = VGAColor;
 
+int counter = 0;
+
 int i = 0;
 
 void abort() {
@@ -199,11 +201,24 @@ static inline void printc(const char c) {
         int bytes_into_row = i % 160; // finds amount needed to add to i to get to a newline
         i += (160 - bytes_into_row); // actually getting to the newline
         printf("User $ \0"); // larping shell commands
+        counter = 0;
         return; // "Back to where thou doth come thence" - some old xenophobic english dude
     }
+    if (c == '\b') {
+        if (counter == 0) {
+            return;
+        }
+        i -= 2;
+        counter--;
+        video[i] = 0x00;
+        video[i + 1] = color;
+        return;
+    }
+    uint8_t canBackspace = 0x01;
     video[i] = c; // write to 
     video[i + 1] = color; // VGA memory
     i += 2; // Eke two
+    counter++;
 }
 
 static inline void scanf() {

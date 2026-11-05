@@ -17,18 +17,36 @@
 
 #define COM1_PORT 0x3F8
 
-const char ascii_scancodes[58] = {
+#define BUFFER_SIZE 1024
+
+const char ascii_lower[58] = {
     0,   27,  '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
     '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
     0,   'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',  39,  '`',
-    0,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',  0,   '*',
+    1,   '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',  1,   '*',
     0,   ' '
 };
 
+const char ascii_upper[58] = {
+    0,   27,  '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b',
+    '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',
+    0,   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',  '"',  '~',
+    0,   '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?',  0,   '*',
+    0,   ' '
+};
+
+int isShiftHeld = 0;
+int inputCMD = 0;
+
+const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#############################################################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
 volatile uint8_t color = VGAColor;
+
+char cmdBuffer[BUFFER_SIZE] = {0};
+
+int exit = 0;
 
 int counter = 0;
 
@@ -192,6 +210,51 @@ static inline void initPS2Controller() {
     }
 }
 
+static inline int strcmp(const char *buffer, int buffer_index, const char *string) {
+    for (int count = 0; count <= buffer_index; count++) { // all you need to know is that this checks if string is equivilant to buffer of what is inputed by user
+        if (buffer[count] != string[count]) { // check if it isnt equivalent to string
+            if (buffer[count] == ' ') { // check if its just an argument
+                return 0;
+            }
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+
+static inline void shellCmds() {
+    if (strcmp(cmdBuffer, counter, "Exit") == 0) { // they are if statements checking wether or not the input matches command
+        clr();
+        printf("It is now safe to shut down your PC");
+        while (1) {
+            asm volatile("hlt");
+        }
+    } 
+    if (strcmp(cmdBuffer, counter, "echo") == 0) {
+        char string[1024];
+        for (int count = 5; count <= counter; count++) {
+            string[count - 5] = cmdBuffer[count]; // copy everything after echo into string minus "echo "
+        }
+        printf(string); // echo it out to std output
+        return;
+    }
+    if (strcmp(cmdBuffer, counter, "whichOS") == 0) {
+        printf("ExoOS ver. 4.2.0");
+        return;
+    }
+    if (strcmp(cmdBuffer, counter, "whichSHELL") == 0) {
+        printf("ExoSHELL v1.1.0");
+        return;
+    }
+    if (strcmp(cmdBuffer, counter, "help") == 0) {
+        printf(helpMSG); // help msg was a little big
+        return;
+    }
+    printf("That is not recognized as a valid command.");
+}
+
 static inline void printc(const char c) {
     if (i > 4000) { // clear screen if it reaches the end
         clr();
@@ -200,39 +263,62 @@ static inline void printc(const char c) {
     if (c == '\n') { // detects if there is a newline
         int bytes_into_row = i % 160; // finds amount needed to add to i to get to a newline
         i += (160 - bytes_into_row); // actually getting to the newline
-        printf("User $ \0"); // larping shell commands
-        counter = 0;
+        shellCmds(); // check if it matches one of the many expansive shell commands
+        if (counter != 0) {
+            for (int count = 0; count <= counter; count++) {
+                cmdBuffer[count] = 0x00;
+            }
+        }
+        printf("\nUser $ \0"); // larping shell commands
+        counter = 0; // counter is zero
         return; // "Back to where thou doth come thence" - some old xenophobic english dude
     }
     if (c == '\b') {
-        if (counter == 0) {
-            return;
+        if (counter == 0) { // Checking if nothing has been typed
+            return; // If it has then be the old xenophobic english dude
         }
-        i -= 2;
-        counter--;
-        video[i] = 0x00;
-        video[i + 1] = color;
-        return;
+        i -= 2; // decrement vga index one character
+        cmdBuffer[counter] = 0x00;
+        counter--; // decrement counter by one
+        video[i] = 0x00; // erasing evidence
+        video[i + 1] = color; // erasing evidence X2
+        return; // return dont print
     }
-    uint8_t canBackspace = 0x01;
+    cmdBuffer[counter] = c; // write to command buffer
     video[i] = c; // write to 
     video[i + 1] = color; // VGA memory
     i += 2; // Eke two
-    counter++;
+    counter++; // make sure to mark your new characters
 }
 
 static inline void scanf() {
     PS2WaitRead(); // wait
     uint8_t scancode = inb(PS2_DATA); // getting the scancode
-    if(scancode & 0x80) { // getting rid of that release code
-        prints("Character from PS/2 input printed\r\n\0");
-        return; // "Back to where thou doth come thence" - another old xenophobic english dude
+    if(scancode == 0x2A || scancode == 0x36){ // if left or right shift is pressed
+        isShiftHeld = 1; // note that
+        return; // gtfo
     }
-    printc(ascii_scancodes[scancode]); // print it
+    if (isShiftHeld == 0) { // checking if shift is being held
+        if(scancode & 0x80) { // getting rid of that release code
+            prints("Character from PS/2 input printed\r\n\0");
+            return; // "Back to where thou doth come thence" - another old xenophobic english dude
+        }
+        printc(ascii_lower[scancode]); // print it
+    } else {
+        if (scancode & 0x80) { // getting rid of that release code
+            if (scancode == 0xB6 || scancode == 0xAA) { // if the scancode is the release code of left or right shift then do below
+                isShiftHeld = 0; // "WRITE THAT DOWN WRITE THAT DOWN!" - spongebob
+                return;
+            }
+            prints("Character from PS/2 input printed\r\n\0");
+            return; // "Back to where thou doth come thence" - another old xenophobic english dude
+        }
+        printc(ascii_upper[scancode]); // PRINT IT
+    }
 }
 
 static inline void keyboard() {
-    while (1) {
+    while (exit == 0) {
         scanf(); // its scanf and always has been
     }
 }

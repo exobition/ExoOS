@@ -248,6 +248,11 @@ static inline void shellCmds() {
         printf("ExoSHELL v1.1.0");
         return;
     }
+    if (strcmp(cmdBuffer, counter, "clear") == 0) {
+        clr();
+        printf("User $ ");
+        return
+    }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big
         return;

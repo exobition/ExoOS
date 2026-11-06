@@ -251,7 +251,7 @@ static inline void shellCmds() {
     if (strcmp(cmdBuffer, counter, "clear") == 0) {
         clr();
         printf("User $ ");
-        return
+        return;
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

@@ -3,3 +3,7 @@
 
 # Ignore license file
 * LICNESE
+
+# Ignore build folder
+build/*
+!build/.gitkeep

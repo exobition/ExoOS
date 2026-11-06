@@ -35,6 +35,15 @@ const char ascii_upper[58] = {
     0,   ' '
 };
 
+const char *floppy_types[] = {
+    "None\n\0",
+    "360 KB 5.25\"\n\0",
+    "1.2 MB 5.25\"\n\0",
+    "720 KB 3.5\"\n\0",
+    "1.44 MB 3.5\"\n\0",
+    "2.88 MB 3.5\"\n\0"
+};
+
 int isShiftHeld = 0;
 int inputCMD = 0;
 
@@ -82,6 +91,12 @@ static inline void prints(const char* str) {
     for (int i = 0; str[i] != '\0'; i++) { // checks if str[i] is at null terminator, otherwise just keeps trucking
         writeCharSerial(str[i]);
     }
+}
+
+static inline uint8_t cmoslsflp() {
+    outb(0x70, 0x10);
+    uint8_t output = inb(0x71);
+    return output;
 }
 
 static inline void  enableCursor(uint8_t cursorStart, uint8_t cursorEnd) { // from here to
@@ -251,6 +266,16 @@ static inline void shellCmds() {
     if (strcmp(cmdBuffer, counter, "clear") == 0) {
         clr();
         return;
+    }
+    if (strcmp(cmdBuffer, counter, "lsflp") == 0) {
+        uint8_t floppy = cmoslsflp();
+        uint8_t fd0 = floppy >> 4;
+        uint8_t fd1 = floppy & 0x0f;
+
+        printf("fd0: ");
+        printf(floppy_types[fd0]);
+        printf("fd1: ");
+        printf(floppy_types[fd1]);
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

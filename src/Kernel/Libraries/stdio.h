@@ -295,35 +295,38 @@ static inline void printc(const char c) {
     counter++; // make sure to mark your new characters
 }
 
-static inline void scanf() {
+static inline char scanf() {
     PS2WaitRead(); // wait
     uint8_t scancode = inb(PS2_DATA); // getting the scancode
     if(scancode == 0x2A || scancode == 0x36){ // if left or right shift is pressed
         isShiftHeld = 1; // note that
-        return; // gtfo
+        return 0x00; // gtfo
     }
     if (isShiftHeld == 0) { // checking if shift is being held
         if(scancode & 0x80) { // getting rid of that release code
-            prints("Character from PS/2 input printed\r\n\0");
-            return; // "Back to where thou doth come thence" - another old xenophobic english dude
+            prints("Character from PS/2 input read\r\n\0");
+            return 0x00; // "Back to where thou doth come thence" - another old xenophobic english dude
         }
-        printc(ascii_lower[scancode]); // print it
+        return ascii_lower[scancode]; // print it
     } else {
         if (scancode & 0x80) { // getting rid of that release code
             if (scancode == 0xB6 || scancode == 0xAA) { // if the scancode is the release code of left or right shift then do below
                 isShiftHeld = 0; // "WRITE THAT DOWN WRITE THAT DOWN!" - spongebob
-                return;
+                return 0x00;
             }
-            prints("Character from PS/2 input printed\r\n\0");
-            return; // "Back to where thou doth come thence" - another old xenophobic english dude
+            prints("Character from PS/2 input read\r\n\0");
+            return 0x00; // "Back to where thou doth come thence" - another old xenophobic english dude
         }
-        printc(ascii_upper[scancode]); // PRINT IT
+        return ascii_upper[scancode]; // PRINT IT
     }
 }
 
 static inline void keyboard() {
     while (exit == 0) {
-        scanf(); // its scanf and always has been
+        char character = scanf(); // its scanf and always has been
+        if (character != 0x00) {
+            printc(character);
+        }
     }
 }
 

@@ -38,7 +38,7 @@ const char ascii_upper[58] = {
 int isShiftHeld = 0;
 int inputCMD = 0;
 
-const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#############################################################";
+const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#############################################################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
@@ -112,15 +112,15 @@ static inline void moveCursor(int x, int y) {
 } // here is all from wiki.osdev.org
 
 static inline void clr() {
-    video = (volatile uint8_t*)VGAMemory;
+    i = 0;
 
-    int i = 0;
     while(i != 4000) {
         video[i] = ' ';
         i++;
         video[i] = 0x00;
         i++;
     }
+    i = 0;
 }
 
 static inline void printf(const char *str) {

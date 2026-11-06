@@ -36,18 +36,18 @@ const char ascii_upper[58] = {
 };
 
 const char *floppy_types[] = {
-    "None\n\0",
-    "360 KB 5.25\"\n\0",
-    "1.2 MB 5.25\"\n\0",
-    "720 KB 3.5\"\n\0",
-    "1.44 MB 3.5\"\n\0",
-    "2.88 MB 3.5\"\n\0"
+    "None\0",
+    "360 KB 5.25\"\0",
+    "1.2 MB 5.25\"\0",
+    "720 KB 3.5\"\0",
+    "1.44 MB 3.5\"\0",
+    "2.88 MB 3.5\"\0"
 };
 
 int isShiftHeld = 0;
 int inputCMD = 0;
 
-const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#############################################################";
+const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#############################################################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
@@ -274,8 +274,9 @@ static inline void shellCmds() {
 
         printf("fd0: ");
         printf(floppy_types[fd0]);
-        printf("fd1: ");
+        printf("\nfd1: ");
         printf(floppy_types[fd1]);
+        return;
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

@@ -94,9 +94,9 @@ static inline void prints(const char* str) {
 }
 
 static inline uint8_t cmoslsflp() {
-    outb(0x70, 0x10);
-    uint8_t output = inb(0x71);
-    return output;
+    outb(0x70, 0x10);  // beg cmos for floppy drives
+    uint8_t output = inb(0x71); // get that output
+    return output;  // ret output
 }
 
 static inline void  enableCursor(uint8_t cursorStart, uint8_t cursorEnd) { // from here to
@@ -129,7 +129,7 @@ static inline void moveCursor(int x, int y) {
 static inline void clr() {
     i = 0;
 
-    while(i != 4000) {
+    while(i != 4000) { // while its not at the end write nothing to the screen
         video[i] = ' ';
         i++;
         video[i] = 0x00;
@@ -155,14 +155,14 @@ static inline void printf(const char *str) {
 }
 
 void PS2WaitWrite() {
-    while (inb(PS2_STATUS_COMMAND) & PS2_STATUS_IBF) {
-
+    while (inb(PS2_STATUS_COMMAND) & PS2_STATUS_IBF) { 
+        // wait to write to the ps/2 shit
     }
 }
 
 void PS2WaitRead() {
     while (!(inb(PS2_STATUS_COMMAND) & PS2_STATUS_OBF)) {
-
+        // wait to write to the ps/2 shit but read what was writted output to the fuck
     }
 }
 
@@ -268,15 +268,15 @@ static inline void shellCmds() {
         return;
     }
     if (strcmp(cmdBuffer, counter, "lsflp") == 0) {
-        uint8_t floppy = cmoslsflp();
-        uint8_t fd0 = floppy >> 4;
-        uint8_t fd1 = floppy & 0x0f;
+        uint8_t floppy = cmoslsflp(); // set floppy to output of cmoslsflp (see cmoslsflp for function)
+        uint8_t fd0 = floppy >> 4; // get the first nibble
+        uint8_t fd1 = floppy & 0x0f; // get the last nibble
 
-        printf("fd0: ");
+        printf("fd0: ");  // print the types of drives you got
         printf(floppy_types[fd0]);
-        printf("\nfd1: ");
+        printf("\nfd1: ");  // print the types of drives you got pt 2
         printf(floppy_types[fd1]);
-        return;
+        return; // return b4 everything says "invalid command"
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

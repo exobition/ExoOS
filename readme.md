@@ -78,7 +78,7 @@ make clean
 
 ```bash
 make all & boot_drive
-# boot_drive is recommended due to the fact it boots floppy and uses a qemu drive (.qcow2)
+# boot_drive is recommended due to the fact it boots cd and uses a qemu drive (.qcow2)
 ```
 
 ## Minimum specs

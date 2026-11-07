@@ -6,7 +6,7 @@ void main() {
     initSerial();
     prints("Kernel loaded into ram successfully\r\nSerial initialized\r\n\0");
     disableCursor();
-    printf("###########################\n# Welcome to ExoOS v4.4.0 #\n###########################\n\0");
+    printf("###########################\n# Welcome to ExoOS v4.4.1 #\n###########################\n\0");
     printf("\nUser $ ");
     // note NEVER DOUBLE \n (as in printf("\n\n");) it will NOT work as intended,
     // instead use printf("\n"); and then another printf("\n")' if you need double

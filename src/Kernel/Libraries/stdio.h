@@ -256,7 +256,7 @@ static inline void shellCmds() {
         return;
     }
     if (strcmp(cmdBuffer, counter, "whichOS") == 0) {
-        printf("ExoOS ver. 4.4.0");
+        printf("ExoOS ver. 4.4.1");
         return;
     }
     if (strcmp(cmdBuffer, counter, "whichSHELL") == 0) {

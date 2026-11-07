@@ -1,3 +1,6 @@
+#ifndef STDIO_H
+#define STDIO_h
+
 #include <stdint.h>
 #include "hwio.h"
 
@@ -61,7 +64,7 @@ int counter = 0;
 
 int i = 0;
 
-void abort() {
+static void abort() {
     while(1) {
         
     }
@@ -359,3 +362,5 @@ static inline void keyboard() {
 /*
     Thank you for reading the source code!
 */
+
+#endif

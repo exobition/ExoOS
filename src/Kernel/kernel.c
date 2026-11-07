@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "Libraries/stdio.h"
+#include "Libraries/floppy.h"
 
 void main() {
     clr();

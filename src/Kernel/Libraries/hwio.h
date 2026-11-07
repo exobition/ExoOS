@@ -1,3 +1,6 @@
+#ifndef HWIO_H
+#define HWIO_H
+
 #include <stdint.h>
 
 static inline uint8_t inb(uint16_t port) {
@@ -26,3 +29,5 @@ static inline void outw(uint16_t port, uint16_t dataWrite) {
         :"a"(dataWrite), "Nd"(port)
     );
 } 
+
+#endif

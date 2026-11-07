@@ -16,6 +16,12 @@ buildOS:
 	rm build/Bootloader/stage1.bin build/Bootloader/stage2.bin build/Bootloader/full_bootloader.bin
 	qemu-img create -f qcow2 build/ExoDisk.qcow2 256M
 
+	dd if=/dev/zero of=build/test_image.img bs=512 count=2880
+	mkfs.fat -F 12 -n "test" build/test_image.img
+	echo "test" >> build/test.txt
+	mcopy -i build/test_image.img build/test.txt ::test.txt
+
+
 clean:
 	rm -rf build/*
 	mkdir build/Bootloader
@@ -23,7 +29,7 @@ clean:
 	mkdir build/iso
 
 boot_drive:
-	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -fda build/cd.iso -serial stdio
+	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -cdrom build/cd.iso -fda build/test_image.img -boot order=dc -serial stdio
 
 boot_floppy:
 	qemu-system-i386 -fda  build/image.img -serial stdio

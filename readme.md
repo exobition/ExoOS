@@ -44,7 +44,7 @@ install wsl and a distro (I recommend ubuntu) and follow the corresponding tutor
 1. make sure you are in the root of the project directory
 2. run code below
 ```bash
-make buildOS
+make all
 ```
 
 ## Booting

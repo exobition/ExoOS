@@ -23,7 +23,7 @@ clean:
 	mkdir build/iso
 
 boot_drive:
-	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -fda build/image.img -serial stdio
+	qemu-system-i386 -m 512M -enable-kvm -hda build/ExoDisk.qcow2 -fda build/cd.iso -serial stdio
 
 boot_floppy:
 	qemu-system-i386 -fda  build/image.img -serial stdio

@@ -11,7 +11,7 @@
 #define VGAWidth 80
 #define VGAHeight 25
 
-#define VGAColor 0x17
+#define VGAColor 0x1f
 
 #define PS2_DATA 0x60
 #define PS2_STATUS_COMMAND 0x64

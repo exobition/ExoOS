@@ -362,6 +362,8 @@ static inline void keyboard() {
 
 /*
     Thank you for reading the source code!
+
+    check out osdev discord @ discord.gg/osdev i think thats the link idk :/
 */
 
 #endif

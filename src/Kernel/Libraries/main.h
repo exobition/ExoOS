@@ -1,5 +1,5 @@
 #ifndef STDIO_H
-#define STDIO_h
+#define STDIO_H
 
 #include <stdint.h>
 #include "hwio.h"

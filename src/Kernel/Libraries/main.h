@@ -51,7 +51,7 @@ const char *floppy_types[] = {
 int isShiftHeld = 0;
 int inputCMD = 0;
 
-const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#           initflp – initializes floppy drive           #\n#############################################################";
+const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#           initflp -- initializes floppy drive           #\n#############################################################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;

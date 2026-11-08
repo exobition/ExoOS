@@ -91,7 +91,7 @@ static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {
     return ((cyl * heads + head) * sectPerTrack) + sect - 1;
 }
 
-static inline void initflp() {
+static inline void initFDC() {
     int flpType = setFloppyDataTypes();
 
     if (flpType != 1) {

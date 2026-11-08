@@ -51,7 +51,7 @@ const char *floppy_types[] = {
 int isShiftHeld = 0;
 int inputCMD = 0;
 
-const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#############################################################";
+const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#           initflp – initializes floppy drive           #\n#############################################################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
@@ -281,6 +281,24 @@ static inline void shellCmds() {
         printf("\nfd1: ");  // print the types of drives you got pt 2
         printf(floppy_types[fd1]);
         return; // return b4 everything says "invalid command"
+    }
+    if (strcmp(cmdBuffer, counter, "initflp") == 0) {
+        prints("Starting floppy drive controller init.\r\n\0");
+
+        setFloppyDataTypes();
+
+        initFDC();
+
+        if (primary_floppy == 0x00) {
+            printf("No floppy drives");
+            prints("Couldnt find floppy drive.");
+            return;
+        }
+        printf("Floppy drive initialized");
+
+        prints("Floppy drive controller init finished.\r\n\0");
+
+        return;
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

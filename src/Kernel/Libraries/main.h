@@ -287,18 +287,25 @@ static inline void shellCmds() {
 
         setFloppyDataTypes();
 
-        initFDC();
+        if (isFloppyInit == 0) {
+            initFDC();
 
-        if (primary_floppy == 0x00) {
-            printf("No floppy drives");
-            prints("Couldnt find floppy drive.");
+            if (primary_floppy == 0x00) {
+                printf("No floppy drives");
+                prints("Couldnt find floppy drive.");
+                return;
+            }
+            printf("Floppy drive initialized");
+
+            prints("Floppy drive controller init finished.\r\n\0");
+
+            return;
+        } else {
+            printf("Floppy drive is already initialized");
+            prints("Skipping floppy drive initialization, job already done.\r\n\0");
+
             return;
         }
-        printf("Floppy drive initialized");
-
-        prints("Floppy drive controller init finished.\r\n\0");
-
-        return;
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

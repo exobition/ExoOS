@@ -10,6 +10,7 @@ static uint8_t cylinders;
 static uint8_t sectPerTrack;
 
 static int timeout = 0;
+static int isFloppyInit = 0;
 
 enum FloppyReg {
     statRegA         = 0x3F0,
@@ -94,7 +95,8 @@ static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {
 static inline void initFDC() {
     int flpType = setFloppyDataTypes();
 
-    if (flpType != 1) {
+    if (flpType != 1 && isFloppyInit == 0) {
+        isFloppyInit++;
 
         outb(digitalOutReg, 0x00);
 
@@ -147,7 +149,8 @@ static inline void initFDC() {
         outb(digitalOutReg, 0x14);
         
         flpMotorDelay();
-
+        
+        return;
     }
 }
 

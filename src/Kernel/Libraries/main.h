@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "hwio.h"
+#include "floppy.h"
 
 #define VGAMemory 0xB8000
 #define VGAMax 0xB9000
@@ -10,7 +11,7 @@
 #define VGAWidth 80
 #define VGAHeight 25
 
-#define VGAColor 0x07
+#define VGAColor 0x17
 
 #define PS2_DATA 0x60
 #define PS2_STATUS_COMMAND 0x64
@@ -135,7 +136,7 @@ static inline void clr() {
     while(i != 4000) { // while its not at the end write nothing to the screen
         video[i] = ' ';
         i++;
-        video[i] = 0x00;
+        video[i] = color;
         i++;
     }
     i = 0;

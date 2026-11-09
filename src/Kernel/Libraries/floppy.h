@@ -24,6 +24,12 @@ enum FloppyReg {
     configControlReg = 0x3F7
 };
 
+struct __attributes__((packed)) {
+    uint8_t cylinder;
+    uint8_t head;
+    uint8_t sector;
+} CHS;
+
 static inline uint8_t cmosIn(uint8_t reg) {
     outb(0x70, reg);
     return inb(0x71);
@@ -82,10 +88,15 @@ static inline int setFloppyDataTypes() {
     return 1;
 }
 
-static inline void LBAToCHS(uint32_t lba, uint8_t *cyl, uint8_t *head, uint8_t *sector){
-    *cyl    = lba / (2 * sectPerTrack);
-    *head   = ((lba % (2 * sectPerTrack)) / sectPerTrack);
-    *sector = ((lba % (2 * sectPerTrack)) % sectPerTrack + 1);
+static inline CHS LBAToCHS(uint32_t lba, uint8_t cyl, uint8_t head, uint8_t sector){
+    CHS cylHeadSect;
+
+    cylHeadSect.cyl    = lba / (2 * sectPerTrack);
+    cylHeadSect.head   = ((lba % (2 * sectPerTrack)) / sectPerTrack);
+    cylHeadSect.sector = ((lba % (2 * sectPerTrack)) % sectPerTrack + 1);
+
+    return cylHeadSect;
+
 }
 
 static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {

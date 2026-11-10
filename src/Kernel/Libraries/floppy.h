@@ -13,22 +13,68 @@ static int timeout = 0;
 static int isFloppyInit = 0;
 
 enum FloppyReg {
-    statRegA         = 0x3F0,
-    statRegB         = 0x3F1,
-    digitalOutReg    = 0x3F2,
-    tapeDriveReg     = 0x3F3,
-    mainStatReg      = 0x3F4,
-    dataRateSelReg   = 0x3F4,
-    dataFIFO         = 0x3F5,
-    digitalInReg     = 0x3F7,
-    configControlReg = 0x3F7
+    statRegA         = 0x3F0,   // ro
+    statRegB         = 0x3F1,   // ro
+    digitalOutReg    = 0x3F2,   // rw
+    tapeDriveReg     = 0x3F3,   // rw
+    mainStatReg      = 0x3F4,   // ro
+    dataRateSelReg   = 0x3F4,   // wo
+    dataFIFO         = 0x3F5,   // rw
+    digitalInReg     = 0x3F7,   // ro
+    configControlReg = 0x3F7    // wo
 };
 
-struct __attributes__((packed)) {
+enum FloppyCommands {
+   readTrack =                  0x02,
+   specify =                    0x03,
+   senseDriveStatus =           0x04,
+   writeData =                  0x05,
+   readData =                   0x06,
+   recalibrate =                0x07,
+   senseInterrupt =             0x08,
+   writeDeletedData =           0x09,
+   readID =                     0x0A,
+   readDeletedData =            0x0C,
+   formatTrack =                0x0D,
+   dumpReg =                    0x0E,
+   seek =                       0x0F,
+   version =                    0x10,
+   scanEqual =                  0x11,
+   perpenDICularMode =          0x12, // hah dick
+   configure =                  0x13,
+   lock =                       0x14,
+   verify =                     0x16,
+   scanLowOrEqual =             0x19,
+   scanHighOrEqual =            0x1D
+};
+
+typedef struct __attributes__((packed)) {
     uint8_t cylinder;
     uint8_t head;
     uint8_t sector;
 } CHS;
+
+typedef struct __attributes__((packed)) {
+    uint8_t status0;
+    uint8_t status1;
+    uint8_t status2;
+    uint8_t cylinder;
+    uint8_t head;
+    uint8_t sector;
+    uint8_t sectSize;
+} returnPacket;
+
+typedef struct __attributes__((packed)) {
+    uint8_t opcode;
+    uint8_t driveHead;
+    uint8_t cylinder;
+    uint8_t head;
+    uint8_t sector;
+    uint8_t sectorsize;
+    uint8_t endOfTrack;
+    uint8_t GPL;
+    uint8_t dataLength;
+} command;
 
 static inline uint8_t cmosIn(uint8_t reg) {
     outb(0x70, reg);

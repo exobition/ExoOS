@@ -195,7 +195,7 @@ static inline void initFDC() {
         outb(dataFIFO, 0xDF);
 
         while ((inb(mainStatReg) & 0xC0) != 0x80) {
-            timeout++;
+            timST0eout++;
             if (timeout == 1000000) {
                 break;
             }

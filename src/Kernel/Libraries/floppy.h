@@ -76,6 +76,15 @@ typedef struct {
     uint8_t dataLength;
 } __attribute__((packed)) command;
 
+static inline void fdcWait() {
+    while ((inb(mainStatReg) & 0xC0) != 0x80) {
+        timeout++;
+        if (timeout == 1000000) {
+            break;
+        }
+    }
+}
+
 static inline uint8_t cmosIn(uint8_t reg) {
     outb(0x70, reg);
     return inb(0x71);
@@ -176,36 +185,33 @@ static inline void initFDC() {
             return;
         }
         
-        while ((inb(mainStatReg) & 0xC0) != 0x80) {
-            timeout++;
-            if (timeout == 1000000) {
-                break;
-            }
-        }
+        fdcWait();
 
         outb(dataFIFO, 0x03);
 
-        while ((inb(mainStatReg) & 0xC0) != 0x80) {
-            timeout++;
-            if (timeout == 1000000) {
-                break;
-            }
-        }
+        fdcWait();
 
         outb(dataFIFO, 0xDF);
 
-        while ((inb(mainStatReg) & 0xC0) != 0x80) {
-            timeout++;
-            if (timeout == 1000000) {
-                break;
-            }
-        }
+        fdcWait();
 
         outb(dataFIFO, 0x03);
 
         outb(digitalOutReg, 0x14);
         
         flpMotorDelay();
+
+        fdcWait();
+
+        outb(dataFIFO, recalibrate);
+
+        fdcWait();
+
+        outb(dataFIFO, 0x00);
+
+        fdcWait();
+
+        outb(dataFIFO, senseInterrupt);
         
         return;
     }

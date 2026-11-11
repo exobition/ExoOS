@@ -48,13 +48,13 @@ enum FloppyCommands {
    scanHighOrEqual =            0x1D
 };
 
-typedef struct __attributes__((packed)) {
+typedef struct  {
     uint8_t cylinder;
     uint8_t head;
     uint8_t sector;
-} CHS;
+} __attribute__((packed)) CHS;
 
-typedef struct __attributes__((packed)) {
+typedef struct {
     uint8_t status0;
     uint8_t status1;
     uint8_t status2;
@@ -62,9 +62,9 @@ typedef struct __attributes__((packed)) {
     uint8_t head;
     uint8_t sector;
     uint8_t sectSize;
-} returnPacket;
+} __attribute__((packed)) returnPacket;
 
-typedef struct __attributes__((packed)) {
+typedef struct {
     uint8_t opcode;
     uint8_t driveHead;
     uint8_t cylinder;
@@ -74,7 +74,7 @@ typedef struct __attributes__((packed)) {
     uint8_t endOfTrack;
     uint8_t GPL;
     uint8_t dataLength;
-} command;
+} __attribute__((packed)) command;
 
 static inline uint8_t cmosIn(uint8_t reg) {
     outb(0x70, reg);
@@ -134,12 +134,12 @@ static inline int setFloppyDataTypes() {
     return 1;
 }
 
-static inline CHS LBAToCHS(uint32_t lba, uint8_t cyl, uint8_t head, uint8_t sector){
+static inline CHS LBAToCHS(uint32_t lba){
     CHS cylHeadSect;
 
-    cylHeadSect.cyl    = lba / (2 * sectPerTrack);
-    cylHeadSect.head   = ((lba % (2 * sectPerTrack)) / sectPerTrack);
-    cylHeadSect.sector = ((lba % (2 * sectPerTrack)) % sectPerTrack + 1);
+    cylHeadSect.cylinder    = lba / (2 * sectPerTrack);
+    cylHeadSect.head        = ((lba % (2 * sectPerTrack)) / sectPerTrack);
+    cylHeadSect.sector      = ((lba % (2 * sectPerTrack)) % sectPerTrack + 1);
 
     return cylHeadSect;
 
@@ -195,7 +195,7 @@ static inline void initFDC() {
         outb(dataFIFO, 0xDF);
 
         while ((inb(mainStatReg) & 0xC0) != 0x80) {
-            timST0eout++;
+            timeout++;
             if (timeout == 1000000) {
                 break;
             }

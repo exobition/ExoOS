@@ -170,6 +170,10 @@ static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {
 
 static inline int read(uint32_t LBA, uint8_t mem[512]) {
 
+    if ( mem == 0x00 ) {
+        return -1;
+    }
+
     uint32_t cyl;
     uint32_t head;
     uint32_t sect;
@@ -183,6 +187,9 @@ static inline int read(uint32_t LBA, uint8_t mem[512]) {
     for ( unsigned int i = 0; i <= 511; i++ ) {
         mem[i] = 0x00;
     }
+
+    return 0;
+
 }
 
 static inline void initFDC() {

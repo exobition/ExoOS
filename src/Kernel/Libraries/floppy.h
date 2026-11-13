@@ -4,13 +4,21 @@
 #include <stdint.h>
 #include "hwio.h"
 
+#define SECTOR_SIZE 512
+
 static uint8_t primary_floppy;
-static uint8_t heads;
+static uint8_t heads = 2;
 static uint8_t cylinders;
 static uint8_t sectPerTrack;
 
 static int timeout = 0;
 static int isFloppyInit = 0;
+
+enum optionBits {
+    MT  = 0x80,  // Multitrack bit value
+    MFM = 0x40,  // Magnetic encoding mode (always set to 1)
+    SK  = 0x20   // Skip
+};
 
 enum FloppyReg {
     statRegA         = 0x3F0,   // ro
@@ -75,6 +83,8 @@ typedef struct {
     uint8_t GPL;
     uint8_t dataLength;
 } __attribute__((packed)) command;
+
+
 
 static inline void fdcWait() {
     while ((inb(mainStatReg) & 0xC0) != 0x80) {
@@ -146,9 +156,9 @@ static inline int setFloppyDataTypes() {
 static inline CHS LBAToCHS(uint32_t lba){
     CHS cylHeadSect;
 
-    cylHeadSect.cylinder    = lba / (2 * sectPerTrack);
-    cylHeadSect.head        = ((lba % (2 * sectPerTrack)) / sectPerTrack);
-    cylHeadSect.sector      = ((lba % (2 * sectPerTrack)) % sectPerTrack + 1);
+    cylHeadSect.cylinder    = lba / (heads * sectPerTrack);
+    cylHeadSect.head        = ((lba % (heads * sectPerTrack)) / sectPerTrack);
+    cylHeadSect.sector      = ((lba % (heads * sectPerTrack)) % sectPerTrack + 1);
 
     return cylHeadSect;
 
@@ -156,6 +166,23 @@ static inline CHS LBAToCHS(uint32_t lba){
 
 static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {
     return ((cyl * heads + head) * sectPerTrack) + sect - 1;
+}
+
+static inline int read(uint32_t LBA, uint8_t mem[512]) {
+
+    uint32_t cyl;
+    uint32_t head;
+    uint32_t sect;
+
+    CHS chs = LBAToCHS(LBA);
+
+    cyl = chs.cylinder;
+    head = chs.head;
+    sect = chs.sector;
+
+    for ( unsigned int i = 0; i <= 511; i++ ) {
+        mem[i] = 0x00;
+    }
 }
 
 static inline void initFDC() {
@@ -212,6 +239,12 @@ static inline void initFDC() {
         fdcWait();
 
         outb(dataFIFO, senseInterrupt);
+
+        int timeout = 0;
+        while ( !(inb(mainStatReg) & 0x40) || timeout < 100000 ) {
+            // just wait
+            timeout++;
+        }
         
         return;
     }

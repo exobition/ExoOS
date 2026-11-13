@@ -9,6 +9,7 @@ static inline int atoi(const char* str) {
 
     if ( str[0] == '-' ) {
         sign = 0;
+        str++;
     }
 
     for ( ; str[i] != 0x00; i++ ) {

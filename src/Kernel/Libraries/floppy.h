@@ -81,14 +81,14 @@ static inline void fdcWait() {
             }
         }
     } else if ( isReadingData == 1 ) {
-        while ( !(inb(mainStatReg) & 0xC0) ) {
+        while ( !(inb(mainStatReg) & 0xE0) ) {
             timeout++;
             if (timeout == 100000) {
                 break;
             }
         }
     } else if ( isReadingResult == 1 ) {
-        while ( !(inb(mainStatReg) & 0xE0) ) {
+        while ( !(inb(mainStatReg) & 0xC0) ) {
             timeout++;
             if (timeout == 100000) {
                 break;

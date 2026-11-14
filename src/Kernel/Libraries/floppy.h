@@ -10,9 +10,23 @@ static uint8_t primary_floppy;
 static uint8_t heads = 2;
 static uint8_t cylinders;
 static uint8_t sectPerTrack;
+static uint8_t driveNum = 0x00;
 
-static int timeout = 0;
+static uint8_t cylinder;
+static uint8_t head;
+static uint8_t sector;
+
+static uint8_t st0;
+static uint8_t st1;
+static uint8_t st2;
+static uint8_t cyl;
+static uint8_t head;
+static uint8_t sect;
+static uint8_t sectSize;
+
 static int isFloppyInit = 0;
+static int isReadingData = 0;
+static int isReadingResult = 0;
 
 enum optionBits {
     MT  = 0x80,  // Multitrack bit value
@@ -56,42 +70,32 @@ enum FloppyCommands {
    scanHighOrEqual =            0x1D
 };
 
-typedef struct  {
-    uint8_t cylinder;
-    uint8_t head;
-    uint8_t sector;
-} __attribute__((packed)) CHS;
-
-typedef struct {
-    uint8_t status0;
-    uint8_t status1;
-    uint8_t status2;
-    uint8_t cylinder;
-    uint8_t head;
-    uint8_t sector;
-    uint8_t sectSize;
-} __attribute__((packed)) returnPacket;
-
-typedef struct {
-    uint8_t opcode;
-    uint8_t driveHead;
-    uint8_t cylinder;
-    uint8_t head;
-    uint8_t sector;
-    uint8_t sectorsize;
-    uint8_t endOfTrack;
-    uint8_t GPL;
-    uint8_t dataLength;
-} __attribute__((packed)) command;
-
-
-
 static inline void fdcWait() {
-    while ((inb(mainStatReg) & 0xC0) != 0x80) {
-        timeout++;
-        if (timeout == 1000000) {
-            break;
+    int timeout = 0;
+
+    if ( isReadingData == 0 && isReadingResult == 0 ) {
+        while ( !(inb(mainStatReg) & 0x80) ) {
+            timeout++;
+            if (timeout == 100000) {
+                break;
+            }
         }
+    } else if ( isReadingData == 1 ) {
+        while ( !(inb(mainStatReg) & 0xC0) ) {
+            timeout++;
+            if (timeout == 100000) {
+                break;
+            }
+        }
+    } else if ( isReadingResult == 1 ) {
+        while ( !(inb(mainStatReg) & 0xE0) ) {
+            timeout++;
+            if (timeout == 100000) {
+                break;
+            }
+        }
+    } else {
+        prints("Genuinely what the fuck are you waiting for? EVERYTHING IS OKAY.\r\n\0");
     }
 }
 
@@ -153,15 +157,13 @@ static inline int setFloppyDataTypes() {
     return 1;
 }
 
-static inline CHS LBAToCHS(uint32_t lba){
-    CHS cylHeadSect;
+static inline void LBAToCHS(uint32_t lba){
 
-    cylHeadSect.cylinder    = lba / (heads * sectPerTrack);
-    cylHeadSect.head        = ((lba % (heads * sectPerTrack)) / sectPerTrack);
-    cylHeadSect.sector      = ((lba % (heads * sectPerTrack)) % sectPerTrack + 1);
+    cylinder    = lba / (heads * sectPerTrack);
+    head        = ((lba % (heads * sectPerTrack)) / sectPerTrack);
+    sector      = ((lba % (heads * sectPerTrack)) % sectPerTrack + 1);
 
-    return cylHeadSect;
-
+    return;
 }
 
 static inline uint32_t CHSToLBA(uint32_t cyl, uint32_t head, uint32_t sect) {
@@ -174,19 +176,84 @@ static inline int read(uint32_t LBA, uint8_t mem[512]) {
         return -1;
     }
 
-    uint32_t cyl;
-    uint32_t head;
-    uint32_t sect;
+    LBAToCHS(LBA);
 
-    CHS chs = LBAToCHS(LBA);
+    fdcWait();
 
-    cyl = chs.cylinder;
-    head = chs.head;
-    sect = chs.sector;
+    outb(dataFIFO, MT | MFM | readData);
+
+    fdcWait();
+
+    outb(dataFIFO, (head << 2) | driveNum);
+
+    fdcWait();
+
+    outb(dataFIFO, cylinder);
+
+    fdcWait();
+
+    outb(dataFIFO, head);
+
+    fdcWait();
+
+    outb(dataFIFO, sector); 
+
+    fdcWait();
+
+    outb(dataFIFO, 0x02);
+
+    fdcWait();
+
+    outb(dataFIFO, sectPerTrack); // idk if this is technically correct but fuck it we ball
+
+    fdcWait();
+
+    outb(dataFIFO, 0x1B);
+
+    fdcWait();
+
+    outb(dataFIFO, 0xFF); 
+
+    isReadingData = 1;
 
     for ( unsigned int i = 0; i <= 511; i++ ) {
-        mem[i] = 0x00;
+        fdcWait();
+
+        mem[i] = inb(dataFIFO);
     }
+
+    isReadingData = 0;
+    isReadingResult = 1;
+
+    fdcWait();
+
+    st0 = inb(dataFIFO);
+
+    fdcWait();
+
+    st1 = inb(dataFIFO);
+
+    fdcWait();
+
+    st2 = inb(dataFIFO);
+
+    fdcWait();
+
+    cyl = inb(dataFIFO);
+
+    fdcWait();
+
+    head = inb(dataFIFO);
+
+    fdcWait();
+
+    sect = inb(dataFIFO);
+
+    fdcWait();
+
+    sectSize = inb(dataFIFO);
+
+    isReadingResult = 0;
 
     return 0;
 

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "floppy.h"
 #include "hwio.h"
+#include "IAO.h"
 
 #define VGAMemory 0xB8000
 #define VGAMax 0xB9000
@@ -18,7 +19,6 @@
 
 #define PS2_STATUS_IBF (1 << 1)
 #define PS2_STATUS_OBF (1 << 0)
-
 
 #define BUFFER_SIZE 1024
 
@@ -50,11 +50,13 @@ const char *floppy_types[] = {
 int isShiftHeld = 0;
 int inputCMD = 0;
 
-const char *helpMSG = "#############################################################\n#   whichOS -- Displays current operating system version.   #\n#           whichSHELL -- Displays current Shell.           #\n#      Exit -- Makes it safe to turn off the computer.      #\n#         help -- Displays commands and their uses.         #\n# echo -- sends what you type after echo to standard output #\n#                 clear -- clear the screen                 #\n#            lsflp -- lists floppy drive devices            #\n#            initflp -- initializes floppy drive            #\n#############################################################";
+const char *helpMSG = "#############################\n# whichOS  whichShell  help #\n#  lsflp    initflp    read #\n#  Exit      echo     clear #\n#############################";
 
 volatile uint8_t *video = (volatile uint8_t*)VGAMemory;
 volatile uint8_t Nl = 0xA0;
 volatile uint8_t color = VGAColor;
+
+uint8_t flpSect[512];
 
 char cmdBuffer[BUFFER_SIZE] = {0};
 
@@ -279,6 +281,22 @@ static inline void shellCmds() {
 
             return;
         }
+    }
+    if (strcmp(cmdBuffer, counter, "read") == 0) {
+        char string0[1024];
+        uint32_t lba;
+        int retStat;
+        for (int count = 5; count <= counter; count++) {
+            string0[count - 5] = cmdBuffer[count]; // copy everything after echo into string minus "echo "
+        }
+        lba = atoi(string0);
+        retStat = read(lba, flpSect);
+        if ( retStat == -1 ) {
+            printf("Unexpected error occurred");
+        } else {
+            printf("Read sector successfully");
+        }
+        return;
     }
     if (strcmp(cmdBuffer, counter, "help") == 0) {
         printf(helpMSG); // help msg was a little big

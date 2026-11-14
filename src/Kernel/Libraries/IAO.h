@@ -1,26 +1,17 @@
 #ifndef IAO_H
 #define IAO_H
 
-static inline int atoi(const char* str) {
+static inline uint32_t atoi(const char* str) {
 
-    int i = 0;
     int sign = 1;
-    int atoi = 0;
+    uint32_t integer = 0x00;
 
-    if ( str[0] == '-' ) {
-        sign = 0;
-        str++;
+    for ( int i = 0; str[i] != 0x00; i++ ) {
+        integer += str[i] - '0';
+        integer *= 16;
     }
 
-    for ( ; str[i] != 0x00; i++ ) {
-        atoi *= 10;
-        atoi += str[i] - '0';
-    }
-    if ( sign == 0 ) {
-        atoi *= -1;
-    }
-
-    return atoi;
+    return integer;
 
 }
 

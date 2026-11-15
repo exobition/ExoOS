@@ -95,7 +95,7 @@ static inline void fdcWait() {
             }
         }
     } else {
-        prints("Genuinely what the fuck are you waiting for? EVERYTHING IS OKAY.\r\n\0");
+        prints("Everything is fine just do the command already\r\n\0");
     }
 }
 
